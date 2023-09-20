@@ -1,25 +1,58 @@
-import logo from './logo.svg';
 import './App.css';
+import Home from './components/Home';
+import TestPage from './components/TestPage';
+import FinishPage from './components/FinishPage';
+
+import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
+import {MathJaxContext} from 'better-react-mathjax'
+import TestStartMiddleware from './middleware/TestStartMiddleware';
+import TestEndMiddleware from './middleware/TestEndMiddleware';
+import ProcessPage from './components/ProcessPage';
+import Navbar from './utils/Navbar';
+
+const mathJaxConfig = {
+  tex: {
+    inlineMath: [
+      ["$", "$"],
+      ["$ ", " $"],
+    ],
+    displayMath: [
+      ["$$", "$$"],
+      ["\\", "\\"],
+    ],
+  },
+  options: {
+    skipHtmlTags: ["script", "noscript", "style", "textarea", "pre"],
+  },
+};
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MathJaxContext config={mathJaxConfig} >
+
+    <main className=' font-normal  '>
+      <BrowserRouter>
+      <Navbar/>
+      
+        <Routes >
+          <Route path='/' element ={<Home />}/>
+          <Route path='/process' element ={<ProcessPage />}/>
+          <Route path='/test' element ={
+            <TestStartMiddleware>
+              <TestPage />
+            </TestStartMiddleware>
+          }/>
+          <Route path='/end' element ={
+            <TestEndMiddleware>
+              <FinishPage />
+            </TestEndMiddleware> 
+          }/>
+        </Routes>
+      </BrowserRouter>
+    </main>
+   </MathJaxContext>
   );
 }
 
 export default App;
+
